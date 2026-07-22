@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedoman Ekstrakurikuler | SMP Labschool UNY</title>
+    <title>Pemilihan Ekstrakurikuler | SMP Labschool UNY</title>
     
     <!-- Google Fonts: Rubik -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,6 +12,9 @@
     
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -34,71 +37,133 @@
                         }
                     },
                     boxShadow: {
-                        'brand': '0 20px 40px -10px rgba(184, 146, 47, 0.35)',
-                        'card': '0 10px 25px -5px rgba(22, 41, 78, 0.05)',
-                        'cardHover': '0 20px 40px -10px rgba(22, 41, 78, 0.1)',
+                        'brand': '0 0 20px rgba(184, 146, 47, 0.5)',
+                        'cardActive': '0 0 30px rgba(184, 146, 47, 0.8)',
                     }
                 }
             }
         }
     </script>
+    
     <style>
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
+        /* Sembunyikan scrollbar bawaan tapi tetap bisa discroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
         }
-        ::-webkit-scrollbar-track {
-            background: #f8f9fa; 
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #b8922f; 
-            border-radius: 4px;
+        
+        /* Custom scrollbar untuk panel stat */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #9e7d28; 
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(22, 41, 78, 0.05); 
+            border-radius: 10px;
         }
-        .plan-card {
-            transition: all 0.3s ease;
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(184, 146, 47, 0.5); 
+            border-radius: 10px;
         }
-        .plan-card:hover {
-            border-color: #b8922f;
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px -10px rgba(22, 41, 78, 0.1);
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(184, 146, 47, 0.8); 
         }
-        .line-clamp-3 {
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;  
-            overflow: hidden;
+
+        /* Animasi Transisi Panel Info */
+        .fade-in-up {
+            animation: fadeInUp 0.4s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Swiper styling */
+        .swiper {
+            width: 100%;
+            padding-top: 20px;
+            padding-bottom: 50px;
+        }
+        .swiper-slide {
+            width: 240px; /* Lebar card mobile */
+            height: 400px;
+            transition: transform 0.4s ease;
+        }
+        @media (min-width: 768px) {
+            .swiper-slide {
+                width: 280px; /* Lebar card desktop */
+                height: 450px;
+            }
+        }
+
+        /* Styling spesifik untuk kartu karakter */
+        .char-card {
+            width: 100%;
+            height: 100%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border-radius: 1rem;
+        }
+        
+        /* Swiper Active Slide (Otomatis Terpilih) */
+        .swiper-slide-active .char-card {
+            transform: scale(1.05);
+            filter: grayscale(0%) blur(0px);
+            z-index: 10;
+        }
+        .swiper-slide-active .char-card .gradient-overlay {
+            opacity: 0; 
+        }
+        .swiper-slide-active .char-card .info-bawah h3 {
+            color: #16294e !important; 
+            text-shadow: 0 2px 15px rgba(255,255,255,1), 0 0 8px rgba(255,255,255,0.9);
+        }
+        .swiper-slide-active .char-card .info-bawah p {
+            color: #b8922f !important; 
+            text-shadow: 0 2px 10px rgba(255,255,255,1);
+            font-weight: 700;
+        }
+        
+        /* Kartu tidak aktif */
+        .swiper-slide:not(.swiper-slide-active) .char-card {
+            filter: grayscale(60%) brightness(0.7) blur(3px); 
+            box-shadow: 0 20px 25px -5px rgba(22, 41, 78, 0.15) !important; 
+        }
+        .swiper-slide:not(.swiper-slide-active) .char-card:hover {
+            filter: grayscale(0%) brightness(1) blur(0px);
+            transform: scale(1.02) translateY(-5px);
         }
     </style>
 </head>
 <body class="bg-brand-white text-brand-navySec font-sans antialiased selection:bg-brand-gold selection:text-white">
 
-    <nav class="bg-brand-white py-6 md:py-8 sticky top-0 z-50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="bg-brand-white/90 backdrop-blur-md py-4 md:py-6 sticky top-0 z-50 border-b border-brand-border">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center">
                 <!-- Logo -->
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-brand-gold rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md">
+                    <div class="w-10 h-10 bg-brand-gold rounded-full flex items-center justify-center text-white font-bold text-xl shadow-brand">
                         L
                     </div>
                     <div class="flex flex-col">
-                        <span class="font-medium text-brand-navy text-xl leading-none">SMP Labschool</span>
-                        <span class="text-[10px] tracking-widest uppercase font-bold text-brand-gold">Universitas Negeri Yogyakarta</span>
+                        <span class="font-medium text-brand-navy text-xl leading-none tracking-wide">Labschool</span>
+                        <span class="text-[10px] tracking-widest uppercase font-bold text-brand-gold">Yogyakarta</span>
                     </div>
                 </div>
 
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex space-x-10">
-                    <a href="#beranda" class="text-brand-navySec hover:text-brand-gold font-medium transition-colors">Beranda</a>
-                    <a href="#ketentuan-umum" class="text-brand-navySec hover:text-brand-gold font-medium transition-colors">Ketentuan</a>
-                    <a href="#daftar-ekskul" class="text-brand-navySec hover:text-brand-gold font-medium transition-colors">Pilihan Ekskul</a>
-                </div>
-
-                <!-- Right Action -->
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="#daftar-ekskul" class="border-2 border-brand-gold text-brand-gold font-medium rounded-full px-8 py-2 hover:bg-brand-gold hover:text-white transition-all">Lihat Program</a>
+                <!-- Navigation Links -->
+                <div class="hidden md:flex space-x-10 items-center">
+                    <a href="#roster-section" class="text-brand-navy hover:text-brand-gold font-medium transition-colors text-sm uppercase tracking-wider">Pilih Ekskul</a>
+                    <a href="#ketentuan-umum" class="text-brand-navySec hover:text-brand-gold font-medium transition-colors text-sm uppercase tracking-wider">Ketentuan Umum</a>
                 </div>
 
                 <!-- Mobile menu button -->
@@ -111,96 +176,109 @@
         </div>
         
         <!-- Mobile Menu Panel -->
-        <div id="mobile-menu" class="hidden md:hidden bg-brand-white border-t border-brand-border px-4 py-4 space-y-2 absolute w-full shadow-lg">
-            <a href="#beranda" class="block px-3 py-2 text-base font-medium text-brand-navySec hover:text-brand-gold">Beranda</a>
+        <div id="mobile-menu" class="hidden md:hidden bg-brand-white border-t border-brand-border px-4 py-4 space-y-2 absolute w-full shadow-2xl">
+            <a href="#roster-section" class="block px-3 py-2 text-base font-medium text-brand-navy hover:text-brand-gold">Pilih Ekskul</a>
             <a href="#ketentuan-umum" class="block px-3 py-2 text-base font-medium text-brand-navySec hover:text-brand-gold">Ketentuan Umum</a>
-            <a href="#daftar-ekskul" class="block px-3 py-2 text-base font-medium text-brand-navySec hover:text-brand-gold">Daftar Ekskul</a>
         </div>
     </nav>
 
-    <section id="beranda" class="pt-10 pb-20 md:pt-20 md:pb-32">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
-                <!-- Text Content -->
-                <div class="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left">
-                    <h1 class="text-4xl md:text-5xl lg:text-[50px] font-medium text-brand-navy leading-[1.2] mb-6">
-                        Jelajahi Potensimu dengan <span class="font-bold text-brand-gold">Ekstrakurikuler SMP Labschool UNY.</span>
-                    </h1>
-                    <p class="text-base text-brand-navySec leading-loose mb-10 max-w-lg">
-                        Kembangkan bakat, minat, dan potensi diri melalui berbagai pilihan program ekstrakurikuler. Temukan passion-mu dan raih prestasi.
-                    </p>
-                    <a href="#ketentuan-umum" class="bg-brand-gold text-white font-bold py-4 px-12 rounded-full shadow-brand hover:bg-brand-goldHover hover:shadow-lg transition-all transform hover:-translate-y-1">
-                        Mulai Jelajahi
-                    </a>
-                </div>
+    <section id="roster-section" class="min-h-[calc(100vh-80px)] flex flex-col relative overflow-hidden py-10 bg-brand-white">
+        <!-- Latar belakang abstrak -->
+        <div class="absolute top-[20%] left-[-10%] w-96 h-96 bg-brand-gold/10 blur-[120px] rounded-full pointer-events-none"></div>
+        <div class="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-brand-navy/5 blur-[150px] rounded-full pointer-events-none"></div>
 
-                <!-- Hero Illustration / Image -->
-                <div class="w-full lg:w-1/2">
-                    <img src="https://drive.google.com/thumbnail?id=1EzYpOAblyjBMIUFDdWrskJNvt4oQKLOf&sz=w1000" alt="Hero Illustration" class="w-full max-w-lg mx-auto drop-shadow-2xl rounded-2xl">
+        <div class="max-w-[1400px] mx-auto w-full px-4 sm:px-6 lg:px-8 flex-1 flex flex-col justify-center relative z-10">
+            
+            <!-- Header Teks -->
+            <div class="mb-10 text-center max-w-2xl mx-auto">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-brand-navy mb-3 tracking-tight">
+                    Pilih <span class="text-brand-gold italic">Ekskul-mu</span>
+                </h1>
+                <p class="text-brand-navySec text-sm md:text-base">
+                    Geser untuk mencari ekskul, lalu <strong>klik kartunya</strong> untuk melihat detail misi, <i>inventory</i>, dan atribut lengkapnya!
+                </p>
+            </div>
+            
+            <!-- Area Carousel / Swiper -->
+            <div class="swiper mySwiper w-full">
+                <div class="swiper-wrapper pb-10" id="character-track">
+                    <!-- Kartu akan dimuat di sini oleh JavaScript -->
                 </div>
+                
+                <!-- Panah Navigasi (Desktop) -->
+                <div class="swiper-button-next !text-brand-gold drop-shadow-md hidden md:flex"></div>
+                <div class="swiper-button-prev !text-brand-gold drop-shadow-md hidden md:flex"></div>
+            </div>
+            
+            <!-- Indikator Geser untuk Mobile -->
+            <div class="flex items-center justify-center gap-2 text-brand-navySec/70 text-xs uppercase tracking-widest mt-2 animate-pulse">
+                <i class="fas fa-chevron-left"></i> Geser & Klik <i class="fas fa-chevron-right"></i>
             </div>
         </div>
     </section>
 
-    <section id="ketentuan-umum" class="py-20 bg-brand-bgGray">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="ketentuan-umum" class="py-20 bg-brand-white">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col lg:flex-row items-center gap-16">
-                <!-- Left: Illustration -->
+                <!-- Kiri: Ilustrasi Aturan -->
                 <div class="w-full lg:w-1/2 hidden md:block">
-                    <img src="https://drive.google.com/thumbnail?id=1x7qKWnRVOYNkom36mqBMJ47pYVDWcsCg&sz=w1000" alt="Features Illustration" class="w-full max-w-md mx-auto rounded-full shadow-lg border-8 border-brand-white">
+                    <img src="https://drive.google.com/thumbnail?id=1x7qKWnRVOYNkom36mqBMJ47pYVDWcsCg&sz=w1000" alt="Features Illustration" class="w-full max-w-md mx-auto rounded-3xl shadow-2xl border-4 border-brand-bgGray hover:scale-105 transition-transform duration-500">
                 </div>
                 
-                <!-- Right: Content List -->
+                <!-- Kanan: Daftar Aturan -->
                 <div class="w-full lg:w-1/2">
-                    <h2 class="text-3xl lg:text-4xl font-medium text-brand-navy leading-snug mb-6">
+                    <div class="inline-block px-3 py-1 bg-brand-navy/10 text-brand-navy font-bold text-xs rounded-full mb-4 uppercase tracking-widest">
+                        System Rules
+                    </div>
+                    <h2 class="text-3xl lg:text-4xl font-black text-brand-navy leading-snug mb-6">
                         Ketentuan Umum Ekstrakurikuler
                     </h2>
-                    <p class="text-brand-navySec leading-loose mb-8">
-                        Informasi penting terkait pelaksanaan, administrasi, dan penilaian yang wajib diketahui oleh seluruh siswa dan orang tua.
+                    <p class="text-brand-navySec text-lg leading-relaxed mb-10">
+                        Sebelum memulai misi, pastikan Anda memahami aturan administrasi dan sistem penilaian berikut.
                     </p>
 
                     <div class="space-y-6">
                         <!-- Rule 1 -->
-                        <div class="flex items-start gap-4">
-                            <div class="w-8 h-8 rounded-full bg-brand-gold/10 flex items-center justify-center flex-shrink-0 mt-1">
-                                <i class="fas fa-check text-brand-gold text-sm"></i>
+                        <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-brand-bgGray transition-colors border border-transparent hover:border-brand-border">
+                            <div class="w-10 h-10 rounded-full bg-brand-navy text-brand-gold flex items-center justify-center flex-shrink-0 shadow-md">
+                                <i class="fas fa-hourglass-half"></i>
                             </div>
                             <div>
-                                <h4 class="font-medium text-brand-navy text-lg">Waktu & Pelaksanaan</h4>
-                                <p class="text-sm text-brand-navySec leading-relaxed mt-1">1 Semester (16 pertemuan, 27 Jul - 27 Sep). Silakan cek jadwal spesifik di masing-masing kartu ekskul. Kelas berjalan jika minimal 7 pendaftar.</p>
+                                <h4 class="font-bold text-brand-navy text-lg">Waktu & Pelaksanaan</h4>
+                                <p class="text-sm text-brand-navySec leading-relaxed mt-1">1 Semester berjalan (16 pertemuan, 27 Jul - 27 Sep). Silakan cek jadwal spesifik di masing-masing panel karakter. Kelas (party) berjalan jika minimal terpenuhi 7 pendaftar.</p>
                             </div>
                         </div>
 
                         <!-- Rule 2 -->
-                        <div class="flex items-start gap-4">
-                            <div class="w-8 h-8 rounded-full bg-brand-gold/10 flex items-center justify-center flex-shrink-0 mt-1">
-                                <i class="fas fa-check text-brand-gold text-sm"></i>
+                        <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-brand-bgGray transition-colors border border-transparent hover:border-brand-border">
+                            <div class="w-10 h-10 rounded-full bg-brand-navy text-brand-gold flex items-center justify-center flex-shrink-0 shadow-md">
+                                <i class="fas fa-file-signature"></i>
                             </div>
                             <div>
-                                <h4 class="font-medium text-brand-navy text-lg">Pendaftaran</h4>
-                                <p class="text-sm text-brand-navySec leading-relaxed mt-1">Pramuka adalah ekskul wajib. Silakan isi formulir pendaftaran, lalu kumpulkan ke wali kelas masing-masing.</p>
+                                <h4 class="font-bold text-brand-navy text-lg">Pendaftaran</h4>
+                                <p class="text-sm text-brand-navySec leading-relaxed mt-1">Pramuka adalah ekskul wajib. Silakan isi lembar formulir pendaftaran fisik, lalu kumpulkan ke Wali Kelas masing-masing sesuai batas waktu.</p>
                             </div>
                         </div>
 
                         <!-- Rule 3 -->
-                        <div class="flex items-start gap-4">
-                            <div class="w-8 h-8 rounded-full bg-brand-gold/10 flex items-center justify-center flex-shrink-0 mt-1">
-                                <i class="fas fa-check text-brand-gold text-sm"></i>
+                        <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-brand-bgGray transition-colors border border-transparent hover:border-brand-border">
+                            <div class="w-10 h-10 rounded-full bg-brand-navy text-brand-gold flex items-center justify-center flex-shrink-0 shadow-md">
+                                <i class="fas fa-coins"></i>
                             </div>
                             <div>
-                                <h4 class="font-medium text-brand-navy text-lg">Administrasi</h4>
-                                <p class="text-sm text-brand-navySec leading-relaxed mt-1">Biaya Rp800.000/semester. Tenggat 25 Juli. Tidak ada refund kecuali alasan medis darurat yang dibuktikan dengan surat dokter.</p>
+                                <h4 class="font-bold text-brand-navy text-lg">Administrasi</h4>
+                                <p class="text-sm text-brand-navySec leading-relaxed mt-1">Biaya pelatihan Rp800.000/semester. Tenggat 25 Juli. Tidak ada fitur refund kecuali alasan medis darurat (dibuktikan dengan surat dokter).</p>
                             </div>
                         </div>
 
                         <!-- Rule 4 -->
-                        <div class="flex items-start gap-4">
-                            <div class="w-8 h-8 rounded-full bg-brand-gold/10 flex items-center justify-center flex-shrink-0 mt-1">
-                                <i class="fas fa-check text-brand-gold text-sm"></i>
+                        <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-brand-bgGray transition-colors border border-transparent hover:border-brand-border">
+                            <div class="w-10 h-10 rounded-full bg-brand-navy text-brand-gold flex items-center justify-center flex-shrink-0 shadow-md">
+                                <i class="fas fa-chart-line"></i>
                             </div>
                             <div>
-                                <h4 class="font-medium text-brand-navy text-lg">Kehadiran & Penilaian</h4>
-                                <p class="text-sm text-brand-navySec leading-relaxed mt-1">Wajib hadir minimal 12 dari 16 kali pertemuan. Penilaian di rapor menggunakan rentang nilai: A, B, C, D.</p>
+                                <h4 class="font-bold text-brand-navy text-lg">Kehadiran & XP (Penilaian)</h4>
+                                <p class="text-sm text-brand-navySec leading-relaxed mt-1">Wajib login (hadir) minimal 12 dari 16 kali pertemuan. Reward penilaian akhir di rapor menggunakan rentang skor huruf: A, B, C, D.</p>
                             </div>
                         </div>
                     </div>
@@ -209,475 +287,340 @@
         </div>
     </section>
 
-    <section id="daftar-ekskul" class="py-24 bg-brand-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-16">
-                <h2 class="text-3xl lg:text-4xl font-medium text-brand-navy leading-snug mb-4">
-                    Pilih Ekstrakurikuler Anda
-                </h2>
-                <p class="text-brand-navySec leading-loose">
-                    Kenali deskripsi, perlengkapan, lokasi, dan target capaian (goals) dari masing-masing program sebelum mendaftar.
-                </p>
-            </div>
-
-            <!-- Grid Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                
-                <!-- 1. Pramuka (Wajib) -->
-                <div class="plan-card bg-brand-white rounded-2xl border-2 border-brand-gold p-6 flex flex-col h-full shadow-card relative overflow-hidden cursor-pointer group" onclick="openModal(this)">
-                    <div class="absolute -right-10 top-5 bg-brand-gold text-white font-bold py-1 px-10 transform rotate-45 text-xs tracking-wider z-10 shadow-md">
-                        WAJIB
-                    </div>
-                    <div class="h-48 w-full mb-6 rounded-xl overflow-hidden relative border border-brand-border">
-                        <img src="https://drive.google.com/thumbnail?id=181I6b98Ba6lRlegNBFzr-_zYF54eG2-q&sz=w1000" alt="Pramuka" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 card-image">
-                        <span class="absolute top-3 left-3 bg-brand-white text-brand-navy text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full shadow-md card-badge">Jumat, 15.00 - 17.00 WIB</span>
-                    </div>
-                    <h3 class="text-xl font-medium text-brand-navy text-center mb-2 card-title">Pramuka</h3>
-                    <p class="text-sm text-center text-brand-navySec mb-6 leading-relaxed line-clamp-3 card-desc">Pramuka (Praja Muda Karana) adalah pendidikan kepanduan yang membentuk karakter siswa yang jujur, disiplin, mandiri, gotong royong, dan cinta alam. Kegiatan diadakan dengan tema yang seru, kreatif, konsentrasi di tempat terbuka, dengan berbagai kegiatan berikut: baris-berbaris, tali-temali, sandi, semaphore, PBB, kemah, dan pionering.</p>
-                    
-                    <div class="mt-auto text-center pt-4 border-t border-gray-100">
-                        <span class="text-brand-gold text-sm font-bold group-hover:text-brand-navy transition-colors flex items-center justify-center gap-2">
-                            Lihat Detail <i class="fas fa-arrow-right"></i>
-                        </span>
-                    </div>
-
-                    <div class="hidden modal-data-content">
-                        <ul class="space-y-4">
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tools text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Alat:</strong> Bendera Semaphore (warna merah dan kuning, ukuran ±40x40 cm), peluit (dengan tali kur kuning), tongkat Pramuka, tali tambang (untuk tali-temali/pionering), ring kacu (cincin hasduk), ikat pinggang, dan buku/acara kegiatan.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tshirt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Pakaian:</strong> Baju coklat muda, bawahan coklat tua. Topi baret/boni coklat (Penggalang/Penegak). Hasduk putih pinggir merah, ikat pinggang coklat/hitam, sepatu & kaos kaki hitam, serta atribut pengenal dan TKK lengkap.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-map-marker-alt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Tempat:</strong> Lapangan Utama Sekolah / Area Perkemahan.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-bullseye text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Goals:</strong> Membentuk siswa yang beriman, bertakwa, dan berbudi pekerti luhur; menumbuhkan rasa nasionalisme, patriotisme, dan cinta tanah air; meningkatkan kedisiplinan, kemandirian, tanggung jawab, dan percaya diri; melatih kecakapan hidup (life skills), kepemimpinan, dan kerjasama tim; mewadahi kepedulian sosial dan lingkungan serta jiwa gotong royong.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- 2. Renang -->
-                <div class="plan-card bg-brand-white rounded-2xl border border-brand-border p-6 flex flex-col h-full shadow-card relative overflow-hidden cursor-pointer group" onclick="openModal(this)">
-                    <div class="h-48 w-full mb-6 rounded-xl overflow-hidden relative border border-brand-border">
-                        <img src="https://drive.google.com/thumbnail?id=1koI_vkd1pOil7tAFGqL4kRoisiuw_y_c&sz=w1000" alt="Renang" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 card-image">
-                        <span class="absolute top-3 left-3 bg-brand-white text-brand-navy text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full shadow-md card-badge">Selasa, 15.00 - 16.30 WIB</span>
-                    </div>
-                    <h3 class="text-xl font-medium text-brand-navy text-center mb-2 card-title">Renang</h3>
-                    <p class="text-sm text-center text-brand-navySec mb-6 leading-relaxed line-clamp-3 card-desc">Ekstrakurikuler untuk meningkatkan kebugaran jasmani dan kedisiplinan murid, melalui penguasaan berbagai gaya renang dan teknik pernapasan dalam program latihan air yang terstruktur.</p>
-                    
-                    <div class="mt-auto text-center pt-4 border-t border-gray-100">
-                        <span class="text-brand-gold text-sm font-bold group-hover:text-brand-navy transition-colors flex items-center justify-center gap-2">
-                            Lihat Detail <i class="fas fa-arrow-right"></i>
-                        </span>
-                    </div>
-
-                    <div class="hidden modal-data-content">
-                        <ul class="space-y-4">
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tools text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Alat:</strong> Kacamata renang, penutup kepala (swim cap), dan papan pelampung (kickboard).</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tshirt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Pakaian:</strong> Baju/celana renang standar olahraga.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-map-marker-alt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Tempat:</strong> Kolam Renang (Sekolah/Umum).</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-bullseye text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Goals:</strong> Murid menguasai minimal dua gaya renang (bebas dan dada) serta mampu berenang sejauh 50 meter tanpa henti dengan teknik pernapasan yang benar.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- 3. Futsal -->
-                <div class="plan-card bg-brand-white rounded-2xl border border-brand-border p-6 flex flex-col h-full shadow-card relative overflow-hidden cursor-pointer group" onclick="openModal(this)">
-                    <div class="h-48 w-full mb-6 rounded-xl overflow-hidden relative border border-brand-border">
-                        <img src="https://drive.google.com/thumbnail?id=1H7PxRQD7oljeQubXr2VJCfO2GinlMQxT&sz=w1000" alt="Futsal" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 card-image">
-                        <span class="absolute top-3 left-3 bg-brand-white text-brand-navy text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full shadow-md card-badge">Rabu, 15.00 - 16.30 WIB</span>
-                    </div>
-                    <h3 class="text-xl font-medium text-brand-navy text-center mb-2 card-title">Futsal</h3>
-                    <p class="text-sm text-center text-brand-navySec mb-6 leading-relaxed line-clamp-3 card-desc">Ekstrakurikuler untuk meningkatkan ketangkasan fisik dan kerja sama tim murid, melalui latihan teknik dasar sepak bola dan strategi permainan dalam kompetisi futsal pelajar.</p>
-                    
-                    <div class="mt-auto text-center pt-4 border-t border-gray-100">
-                        <span class="text-brand-gold text-sm font-bold group-hover:text-brand-navy transition-colors flex items-center justify-center gap-2">
-                            Lihat Detail <i class="fas fa-arrow-right"></i>
-                        </span>
-                    </div>
-
-                    <div class="hidden modal-data-content">
-                        <ul class="space-y-4">
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tools text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Alat:</strong> Bola futsal, rompi latihan (bibs), cone/marker pembatas.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tshirt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Pakaian:</strong> Jersey/kaos olahraga, celana pendek olahraga, sepatu futsal, dan kaos kaki panjang.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-map-marker-alt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Tempat:</strong> Lapangan Futsal / Lapangan Olahraga Sekolah.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-bullseye text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Goals:</strong> Membentuk tim yang solid, menguasai teknik passing dan shooting dasar, serta berpartisipasi aktif dalam turnamen antarkelas atau antarsekolah.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- 4. English Club -->
-                <div class="plan-card bg-brand-white rounded-2xl border border-brand-border p-6 flex flex-col h-full shadow-card relative overflow-hidden cursor-pointer group" onclick="openModal(this)">
-                    <div class="h-48 w-full mb-6 rounded-xl overflow-hidden relative border border-brand-border">
-                        <img src="https://drive.google.com/thumbnail?id=1rcUexjGq_RG8uCfRNfLSKiILk8xbWM3R&sz=w1000" alt="English Club" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 card-image">
-                        <span class="absolute top-3 left-3 bg-brand-white text-brand-navy text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full shadow-md card-badge">Kamis, 15.00 - 16.30 WIB</span>
-                    </div>
-                    <h3 class="text-xl font-medium text-brand-navy text-center mb-2 card-title">The Wordsmith (English Club)</h3>
-                    <p class="text-sm text-center text-brand-navySec mb-6 leading-relaxed line-clamp-3 card-desc">Ekstrakurikuler untuk mengasah kemampuan komunikasi dan rasa percaya diri murid, melalui latihan public speaking, debat, dan penulisan kreatif berbahasa Inggris dalam simulasi konferensi atau kompetisi bahasa.</p>
-                    
-                    <div class="mt-auto text-center pt-4 border-t border-gray-100">
-                        <span class="text-brand-gold text-sm font-bold group-hover:text-brand-navy transition-colors flex items-center justify-center gap-2">
-                            Lihat Detail <i class="fas fa-arrow-right"></i>
-                        </span>
-                    </div>
-
-                    <div class="hidden modal-data-content">
-                        <ul class="space-y-4">
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tools text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Alat:</strong> Buku catatan, alat tulis, kamus, dan laptop/gawai (untuk riset materi).</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tshirt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Pakaian:</strong> Seragam sekolah atau pakaian bebas rapi.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-map-marker-alt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Tempat:</strong> Ruang Kelas / Laboratorium Bahasa.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-bullseye text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Goals:</strong> Murid mampu menyusun argumen yang logis, berpidato tanpa teks (impromptu), dan siap mewakili sekolah dalam kompetisi Speech atau English Debate.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- 5. ICT -->
-                <div class="plan-card bg-brand-white rounded-2xl border border-brand-border p-6 flex flex-col h-full shadow-card relative overflow-hidden cursor-pointer group" onclick="openModal(this)">
-                    <div class="h-48 w-full mb-6 rounded-xl overflow-hidden relative border border-brand-border">
-                        <img src="https://drive.google.com/thumbnail?id=1uaz_Lg-dHc5Ig96nccFol01WWJybDqLI&sz=w1000" alt="ICT Coding" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 card-image">
-                        <span class="absolute top-3 left-3 bg-brand-white text-brand-navy text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full shadow-md card-badge">Jumat, 14.00 - 15.30 WIB</span>
-                    </div>
-                    <h3 class="text-xl font-medium text-brand-navy text-center mb-2 card-title">ICT (Coding)</h3>
-                    <p class="text-sm text-center text-brand-navySec mb-6 leading-relaxed line-clamp-3 card-desc">Ekstrakurikuler untuk mengasah dan meningkatkan kemampuan berpikir logis murid, melalui coding Scratch dan coding Python sederhana dalam mini project IoT.</p>
-                    
-                    <div class="mt-auto text-center pt-4 border-t border-gray-100">
-                        <span class="text-brand-gold text-sm font-bold group-hover:text-brand-navy transition-colors flex items-center justify-center gap-2">
-                            Lihat Detail <i class="fas fa-arrow-right"></i>
-                        </span>
-                    </div>
-
-                    <div class="hidden modal-data-content">
-                        <ul class="space-y-4">
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tools text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Alat:</strong> Laptop/komputer, koneksi internet, perangkat microcontroller dasar (seperti Arduino/Raspberry Pi Pico).</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tshirt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Pakaian:</strong> Seragam sekolah.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-map-marker-alt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Tempat:</strong> Laboratorium Komputer.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-bullseye text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Goals:</strong> Menghasilkan minimal satu program interaktif/aplikasi sederhana secara mandiri dan memamerkannya pada pameran teknologi akhir semester sekolah.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- 6. Dance -->
-                <div class="plan-card bg-brand-white rounded-2xl border border-brand-border p-6 flex flex-col h-full shadow-card relative overflow-hidden cursor-pointer group" onclick="openModal(this)">
-                    <div class="h-48 w-full mb-6 rounded-xl overflow-hidden relative border border-brand-border">
-                        <img src="https://drive.google.com/thumbnail?id=1I76k-S8puJ5bHCvWS8xBuT7D9cu3AH_E&sz=w1000" alt="Dance" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 card-image">
-                        <span class="absolute top-3 left-3 bg-brand-white text-brand-navy text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full shadow-md card-badge">Senin, 15.00 - 16.30 WIB</span>
-                    </div>
-                    <h3 class="text-xl font-medium text-brand-navy text-center mb-2 card-title">Dance</h3>
-                    <p class="text-sm text-center text-brand-navySec mb-6 leading-relaxed line-clamp-3 card-desc">Ekstrakurikuler untuk mengekspresikan kreativitas dan meningkatkan koordinasi tubuh murid, melalui latihan ritme dan penguasaan koreografi modern dalam pementasan seni kreatif.</p>
-                    
-                    <div class="mt-auto text-center pt-4 border-t border-gray-100">
-                        <span class="text-brand-gold text-sm font-bold group-hover:text-brand-navy transition-colors flex items-center justify-center gap-2">
-                            Lihat Detail <i class="fas fa-arrow-right"></i>
-                        </span>
-                    </div>
-
-                    <div class="hidden modal-data-content">
-                        <ul class="space-y-4">
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tools text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Alat:</strong> Speaker / Sound system, perangkat pemutar musik, dan cermin latihan.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tshirt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Pakaian:</strong> Pakaian olahraga yang longgar/elastis (menyerap keringat) dan sepatu kets (sneakers).</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-map-marker-alt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Tempat:</strong> Aula Sekolah / Ruang Kesenian.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-bullseye text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Goals:</strong> Menguasai teknik dasar dance, meningkatkan kelenturan tubuh, dan mampu menampilkan koreografi kelompok pada pentas seni sekolah.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- 7. Phonetography -->
-                <div class="plan-card bg-brand-white rounded-2xl border border-brand-border p-6 flex flex-col h-full shadow-card relative overflow-hidden cursor-pointer group" onclick="openModal(this)">
-                    <div class="h-48 w-full mb-6 rounded-xl overflow-hidden relative border border-brand-border">
-                        <img src="https://drive.google.com/thumbnail?id=1nIHGPsZVKaRoRzkfoZPNYsb7poAMMhWH&sz=w1000" alt="Phonetography" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 card-image">
-                        <span class="absolute top-3 left-3 bg-brand-white text-brand-navy text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full shadow-md card-badge">Rabu, 15.00 - 16.30 WIB</span>
-                    </div>
-                    <h3 class="text-xl font-medium text-brand-navy text-center mb-2 card-title">Fotografi Smartphone (Phonetography)</h3>
-                    <p class="text-sm text-center text-brand-navySec mb-6 leading-relaxed line-clamp-3 card-desc">Ekstrakurikuler untuk mengasah dan meningkatkan kreativitas visual murid, melalui teknik komposisi dan penyuntingan foto menggunakan smartphone dalam pameran portofolio digital.</p>
-                    
-                    <div class="mt-auto text-center pt-4 border-t border-gray-100">
-                        <span class="text-brand-gold text-sm font-bold group-hover:text-brand-navy transition-colors flex items-center justify-center gap-2">
-                            Lihat Detail <i class="fas fa-arrow-right"></i>
-                        </span>
-                    </div>
-
-                    <div class="hidden modal-data-content">
-                        <ul class="space-y-4">
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tools text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Alat:</strong> Smartphone dengan kamera, tripod mini, ring light portabel (opsional).</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tshirt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Pakaian:</strong> Seragam sekolah atau seragam khusus ekskul.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-map-marker-alt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Tempat:</strong> Ruang Kelas (teori) / Lingkungan Sekolah (hunting foto).</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-bullseye text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Goals:</strong> Menguasai fungsi Pro/Manual Mode pada kamera HP, mahir melakukan color grading melalui aplikasi mobile, dan mengadakan galeri pameran fotografi digital.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- 8. TKA -->
-                <div class="plan-card bg-brand-white rounded-2xl border border-brand-border p-6 flex flex-col h-full shadow-card relative overflow-hidden cursor-pointer group" onclick="openModal(this)">
-                    <div class="h-48 w-full mb-6 rounded-xl overflow-hidden relative border border-brand-border">
-                        <img src="https://drive.google.com/thumbnail?id=108xBbykeHrZODvd1dC6hzb8JvSZhL1wY&sz=w1000" alt="TKA" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 card-image">
-                        <span class="absolute top-3 left-3 bg-brand-white text-brand-navy text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full shadow-md card-badge">Selasa, 15.00 - 16.30 WIB</span>
-                    </div>
-                    <h3 class="text-xl font-medium text-brand-navy text-center mb-2 card-title">Tes Kemampuan Akademik (TKA)</h3>
-                    <p class="text-sm text-center text-brand-navySec mb-6 leading-relaxed line-clamp-3 card-desc">Ekstrakurikuler untuk meningkatkan penalaran analitis dan kesiapan akademik murid, melalui pembahasan taktis soal-soal logika, matematika dasar, dan verbal dalam simulasi ujian berkala.</p>
-                    
-                    <div class="mt-auto text-center pt-4 border-t border-gray-100">
-                        <span class="text-brand-gold text-sm font-bold group-hover:text-brand-navy transition-colors flex items-center justify-center gap-2">
-                            Lihat Detail <i class="fas fa-arrow-right"></i>
-                        </span>
-                    </div>
-
-                    <div class="hidden modal-data-content">
-                        <ul class="space-y-4">
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tools text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Alat:</strong> Modul soal-soal TKA/TPS, alat tulis, dan stopwatch/pewaktu (untuk simulasi).</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tshirt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Pakaian:</strong> Seragam sekolah.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-map-marker-alt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Tempat:</strong> Ruang Kelas / Perpustakaan.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-bullseye text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Goals:</strong> Meningkatkan kecepatan dan ketepatan murid dalam menjawab soal logika-analitik, serta pencapaian target skor Try Out TKA untuk persiapan seleksi masuk perguruan tinggi/kompetisi akademik.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- 9. Badminton -->
-                <div class="plan-card bg-brand-white rounded-2xl border border-brand-border p-6 flex flex-col h-full shadow-card relative overflow-hidden cursor-pointer group" onclick="openModal(this)">
-                    <div class="h-48 w-full mb-6 rounded-xl overflow-hidden relative border border-brand-border">
-                        <img src="https://drive.google.com/thumbnail?id=1gkl9uSMiLedYjLDmZnmUs76IYEwF1eFB&sz=w1000" alt="Badminton" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 card-image">
-                        <span class="absolute top-3 left-3 bg-brand-white text-brand-navy text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full shadow-md card-badge">Kamis, 15.00 - 16.30 WIB</span>
-                    </div>
-                    <h3 class="text-xl font-medium text-brand-navy text-center mb-2 card-title">Badminton</h3>
-                    <p class="text-sm text-center text-brand-navySec mb-6 leading-relaxed line-clamp-3 card-desc">Ekstrakurikuler untuk melatih kelincahan fisik dan refleks murid, melalui teknik pukulan dasar dan pergerakan kaki (footwork) dalam pertandingan bulu tangkis yang kompetitif.</p>
-                    
-                    <div class="mt-auto text-center pt-4 border-t border-gray-100">
-                        <span class="text-brand-gold text-sm font-bold group-hover:text-brand-navy transition-colors flex items-center justify-center gap-2">
-                            Lihat Detail <i class="fas fa-arrow-right"></i>
-                        </span>
-                    </div>
-
-                    <div class="hidden modal-data-content">
-                        <ul class="space-y-4">
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tools text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Alat:</strong> Raket badminton, shuttlecock, dan net.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-tshirt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Pakaian:</strong> Kaos olahraga, celana pendek/training, dan sepatu olahraga khusus (indoor/karet).</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-map-marker-alt text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Tempat:</strong> GOR / Lapangan Bulu Tangkis Sekolah.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fas fa-bullseye text-brand-gold mt-1 w-5 text-center flex-shrink-0"></i>
-                                <span class="text-sm text-brand-navySec"><strong>Goals:</strong> Memahami peraturan resmi permainan, menguasai teknik dasar (serve, lob, drop shot, smash), dan mampu bersaing dalam pertandingan tunggal maupun ganda di level sekolah.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Modal Ekstrakurikuler -->
+    <!-- Modal Informasi Ekskul -->
     <div id="detail-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6">
+        <!-- Backdrop -->
         <div class="absolute inset-0 bg-brand-navy/80 backdrop-blur-sm transition-opacity opacity-0 cursor-pointer" id="modal-backdrop" onclick="closeModal()"></div>
         
         <!-- Modal Content -->
-        <div class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl relative z-10 flex flex-col transform scale-95 opacity-0 transition-all duration-300" id="modal-panel">
-            <!-- Header with Image -->
-            <div class="relative h-48 sm:h-64 w-full">
-                <img id="modal-image" src="" alt="Modal Image" class="w-full h-full object-cover">
-                <!-- Close Button over the image -->
-                <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm border border-brand-border flex items-center justify-center text-brand-navySec hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors z-20">
-                    <i class="fas fa-times"></i>
+        <div class="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl relative z-10 flex flex-col transform scale-95 opacity-0 transition-all duration-300 border-t-[6px] border-brand-gold" id="modal-panel">
+            
+            <!-- Header Modal -->
+            <div class="px-6 py-5 border-b border-brand-border flex justify-between items-center bg-brand-bgGray relative overflow-hidden">
+                <!-- Latar Watermark -->
+                <i class="fas fa-shield-alt absolute -bottom-5 -right-5 text-8xl text-brand-navy/5 transform -rotate-12 pointer-events-none"></i>
+                <div class="z-10">
+                    <span id="modal-badge" class="inline-block px-3 py-1 text-[10px] font-black tracking-widest uppercase rounded-full mb-2 shadow-sm"></span>
+                    <h3 id="modal-title" class="text-2xl sm:text-3xl font-black text-brand-navy tracking-tight">Nama Ekskul</h3>
+                </div>
+                <button onclick="closeModal()" class="w-10 h-10 rounded-full bg-white border border-brand-border flex items-center justify-center text-brand-navySec hover:bg-brand-gold/10 hover:text-brand-gold hover:border-brand-gold transition-colors z-10">
+                    <i class="fas fa-times text-lg"></i>
                 </button>
             </div>
             
-            <!-- Body -->
-            <div class="p-6 overflow-y-auto">
-                <div class="flex flex-wrap items-center justify-between mb-4 gap-4">
-                    <h3 id="modal-title" class="text-xl sm:text-2xl font-bold text-brand-navy">Title</h3>
-                    <span id="modal-badge" class="bg-brand-gold/10 border border-brand-gold/30 text-brand-gold text-xs font-bold px-3 py-1.5 rounded-full shadow-sm whitespace-nowrap"></span>
-                </div>
-                
-                <p id="modal-desc" class="text-sm sm:text-base text-brand-navySec leading-relaxed mb-6 p-4 bg-brand-bgGray rounded-xl border border-brand-border"></p>
-                
-                <h4 class="font-bold text-brand-navy mb-4 text-lg border-b-2 border-brand-gold inline-block pb-1">Informasi & Ketentuan</h4>
-                <div id="modal-details" class="text-sm sm:text-base text-brand-navySec">
-                    <!-- Data injected here -->
+            <!-- Body Modal (Scrollable) -->
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-white relative">
+                <div class="flex flex-col gap-6 relative z-10">
+                    
+                    <!-- Jadwal -->
+                    <div class="inline-flex items-center gap-2 bg-brand-bgGray border border-brand-border px-4 py-2 rounded-xl self-start shadow-sm">
+                        <i class="far fa-calendar-alt text-brand-gold"></i>
+                        <span id="modal-time" class="text-sm font-medium text-brand-navySec">Hari & Jam</span>
+                    </div>
+
+                    <!-- Deskripsi Singkat -->
+                    <p id="modal-desc" class="text-sm sm:text-base text-brand-navySec leading-relaxed"></p>
+                    
+                    <!-- Grid Atribut (Game Style) -->
+                    <div class="grid grid-cols-1 gap-4 mt-2">
+                        <!-- Inventory (Alat) -->
+                        <div class="bg-brand-bgGray p-4 rounded-xl border border-brand-border/60 hover:border-brand-gold/50 transition-colors">
+                            <h4 class="text-brand-navy font-bold text-sm mb-2 flex items-center gap-2 uppercase tracking-wide">
+                                <i class="fas fa-toolbox text-brand-gold w-5"></i> Inventory (Alat)
+                            </h4>
+                            <p id="modal-alat" class="text-brand-navySec text-xs md:text-sm leading-relaxed"></p>
+                        </div>
+                        
+                        <!-- Armor (Pakaian) -->
+                        <div class="bg-brand-bgGray p-4 rounded-xl border border-brand-border/60 hover:border-brand-gold/50 transition-colors">
+                            <h4 class="text-brand-navy font-bold text-sm mb-2 flex items-center gap-2 uppercase tracking-wide">
+                                <i class="fas fa-tshirt text-brand-gold w-5"></i> Skin (Pakaian)
+                            </h4>
+                            <p id="modal-pakaian" class="text-brand-navySec text-xs md:text-sm leading-relaxed"></p>
+                        </div>
+                        
+                        <!-- Base (Tempat) -->
+                        <div class="bg-brand-bgGray p-4 rounded-xl border border-brand-border/60 hover:border-brand-gold/50 transition-colors">
+                            <h4 class="text-brand-navy font-bold text-sm mb-2 flex items-center gap-2 uppercase tracking-wide">
+                                <i class="fas fa-map-marked-alt text-brand-gold w-5"></i> Arena (Tempat)
+                            </h4>
+                            <p id="modal-tempat" class="text-brand-navySec text-xs md:text-sm leading-relaxed"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Quest Goals -->
+                    <div class="bg-gradient-to-br from-brand-navy to-brand-navySec p-5 rounded-2xl border border-brand-navy shadow-lg relative overflow-hidden mt-4">
+                        <div class="absolute top-0 right-0 w-20 h-20 bg-brand-gold/20 rounded-full blur-xl transform translate-x-1/2 -translate-y-1/2"></div>
+                        <h4 class="text-brand-gold font-bold text-sm mb-2 flex items-center gap-2 uppercase tracking-wider relative z-10">
+                            <i class="fas fa-star text-yellow-400"></i> Quest Goals
+                        </h4>
+                        <p id="modal-goals" class="text-white/90 text-xs md:text-sm leading-relaxed relative z-10"></p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="bg-brand-bgGray pt-20 pb-10 border-t border-brand-border mt-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 mb-12">
-                <!-- Brand Info -->
+    <footer class="bg-brand-bgGray pt-16 pb-8 border-t border-brand-border">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 mb-10">
                 <div class="max-w-sm text-center md:text-left">
-                    <div class="flex items-center justify-center md:justify-start gap-3 mb-6">
-                        <div class="w-10 h-10 bg-brand-gold rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md">
+                    <div class="flex items-center justify-center md:justify-start gap-3 mb-4">
+                        <div class="w-8 h-8 bg-brand-gold rounded-full flex items-center justify-center text-white font-bold shadow-md">
                             L
                         </div>
-                        <div class="flex flex-col text-left">
-                            <span class="font-medium text-brand-navy text-xl leading-none">Labschool</span>
-                        </div>
+                        <span class="font-bold text-brand-navy text-lg leading-none tracking-wide">SMP Labschool UNY</span>
                     </div>
-                    <p class="text-sm text-brand-navySec leading-loose mb-6">
-                        Membentuk generasi cerdas berkarakter, luhur berbudaya, siap mendunia.
+                    <p class="text-sm text-brand-navySec leading-relaxed mb-6">
+                        Membentuk generasi cerdas, berkarakter, dan berprestasi layaknya pahlawan di dunia nyata.
                     </p>
-                    <!-- Socials -->
-                    <div class="flex gap-4 justify-center md:justify-start">
-                        <a href="#" class="w-8 h-8 rounded-full bg-brand-white flex items-center justify-center text-brand-gold shadow-sm hover:bg-brand-gold hover:text-white transition-all transform hover:-translate-y-1 border border-brand-border">
-                            <i class="fab fa-facebook-f text-sm"></i>
-                        </a>
-                        <a href="#" class="w-8 h-8 rounded-full bg-brand-white flex items-center justify-center text-brand-gold shadow-sm hover:bg-brand-gold hover:text-white transition-all transform hover:-translate-y-1 border border-brand-border">
-                            <i class="fab fa-twitter text-sm"></i>
-                        </a>
-                        <a href="#" class="w-8 h-8 rounded-full bg-brand-white flex items-center justify-center text-brand-gold shadow-sm hover:bg-brand-gold hover:text-white transition-all transform hover:-translate-y-1 border border-brand-border">
-                            <i class="fab fa-instagram text-sm"></i>
-                        </a>
-                    </div>
                 </div>
             </div>
             
-            <div class="border-t border-brand-border pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-sm text-brand-navySec">
-                    ©2024 SMP Labschool UNY. All rights reserved.
+            <div class="border-t border-brand-border/50 pt-6 flex justify-center items-center">
+                <p class="text-xs text-brand-navySec/70 font-medium tracking-wide">
+                    © 2024 SMP Labschool UNY. All rights reserved.
                 </p>
             </div>
         </div>
     </footer>
 
+    <!-- Swiper JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
     <script>
-        // Mobile menu toggle script
+        // Menu Mobile
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
-
-        btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
+        btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => menu.classList.add('hidden'));
         });
 
-        // Close mobile menu when a link is clicked
-        const mobileLinks = menu.querySelectorAll('a');
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                menu.classList.add('hidden');
+        // Data Ekstrakurikuler (Database Karakter)
+        const ekskulDB = [
+            {
+                id: 'pramuka',
+                name: 'Pramuka',
+                type: 'WAJIB',
+                day: 'Jumat',
+                time: '15.00 - 17.00 WIB',
+                image: 'https://drive.google.com/thumbnail?id=1XQn8pRdHMcbQF9bm5lRZskmjOmGIYp-7&sz=w1000',
+                desc: 'Pendidikan kepanduan yang membentuk karakter siswa yang jujur, disiplin, mandiri, gotong royong, dan cinta alam. Kegiatan diadakan dengan tema yang seru, kreatif, di tempat terbuka, meliputi baris-berbaris, tali-temali, sandi, semaphore, kemah, dan pionering.',
+                alat: 'Bendera Semaphore (merah & kuning), peluit (tali kur kuning), tongkat, tali tambang, ring kacu, ikat pinggang, buku SKU/kegiatan.',
+                pakaian: 'Atasan coklat muda, bawahan coklat tua. Topi baret/boni, Hasduk putih-merah, sepatu hitam, atribut & TKK lengkap.',
+                tempat: 'Lapangan Utama Sekolah / Area Perkemahan.',
+                goals: 'Lulus uji SKU, memahami sandi, tali-temali (pioneering), pertolongan pertama, & sukses menyelenggarakan Persami.'
+            },
+            {
+                id: 'renang',
+                name: 'Renang',
+                type: 'PILIHAN',
+                day: 'Selasa',
+                time: '15.00 - 16.30 WIB',
+                image: 'https://drive.google.com/thumbnail?id=199VVH-HCwLo4jdwohWpWLrTSHN_AUwUZ&sz=w1000',
+                desc: 'Meningkatkan kebugaran jasmani dan kedisiplinan murid, melalui penguasaan berbagai gaya renang dan teknik pernapasan dalam program latihan air yang terstruktur.',
+                alat: 'Kacamata renang, penutup kepala (swim cap), dan papan pelampung (kickboard).',
+                pakaian: 'Baju/celana renang standar olahraga.',
+                tempat: 'Kolam Renang (Sekolah/Umum).',
+                goals: 'Menguasai minimal dua gaya renang (bebas dan dada) serta mampu berenang sejauh 50 meter tanpa henti.'
+            },
+            {
+                id: 'futsal',
+                name: 'Futsal',
+                type: 'PILIHAN',
+                day: 'Rabu',
+                time: '15.00 - 16.30 WIB',
+                image: 'https://drive.google.com/thumbnail?id=1cuisgvEHbIZb2MxyixVIEcRzMR1DSz-n&sz=w1000',
+                desc: 'Meningkatkan ketangkasan fisik dan kerja sama tim murid, melalui latihan teknik dasar sepak bola dan strategi permainan dalam kompetisi futsal pelajar.',
+                alat: 'Bola futsal, rompi latihan (bibs), cone/marker pembatas.',
+                pakaian: 'Jersey/kaos olahraga, celana pendek, sepatu futsal, dan kaos kaki panjang.',
+                tempat: 'Lapangan Futsal / Olahraga Sekolah.',
+                goals: 'Membentuk tim solid, menguasai teknik passing & shooting dasar, berpartisipasi aktif dalam turnamen.'
+            },
+            {
+                id: 'ict',
+                name: 'ICT (Coding)',
+                type: 'PILIHAN',
+                day: 'Jumat',
+                time: '14.00 - 15.30 WIB',
+                image: 'https://drive.google.com/thumbnail?id=1CKgVsOhhq2id5piw1LHtz6Q3BUSBs4nU&sz=w1000',
+                desc: 'Mengasah kemampuan berpikir logis murid, melalui pemrograman Scratch dan Python sederhana dalam pengembangan mini project IoT.',
+                alat: 'Laptop/komputer, koneksi internet, perangkat microcontroller (seperti Arduino/Raspberry Pi).',
+                pakaian: 'Seragam sekolah yang berlaku.',
+                tempat: 'Laboratorium Komputer.',
+                goals: 'Menghasilkan minimal satu program interaktif/aplikasi secara mandiri & dipamerkan di akhir semester.'
+            },
+            {
+                id: 'dance',
+                name: 'Dance',
+                type: 'PILIHAN',
+                day: 'Senin',
+                time: '15.00 - 16.30 WIB',
+                image: 'https://drive.google.com/thumbnail?id=1JVYxfHBpEw0LO28Zqa7uj2nu-75gV4oW&sz=w1000',
+                desc: 'Mengekspresikan kreativitas dan meningkatkan koordinasi tubuh, melalui latihan ritme dan penguasaan koreografi modern dalam pementasan seni.',
+                alat: 'Speaker / Sound system, pemutar musik, dan cermin latihan.',
+                pakaian: 'Pakaian olahraga longgar/elastis (menyerap keringat) dan sepatu kets (sneakers).',
+                tempat: 'Aula Sekolah / Ruang Kesenian.',
+                goals: 'Menguasai teknik dasar dance, kelenturan tubuh, & mampu menampilkan koreografi pada pentas seni sekolah.'
+            },
+            {
+                id: 'phonetography',
+                name: 'Phonetography',
+                type: 'PILIHAN',
+                day: 'Rabu',
+                time: '15.00 - 16.30 WIB',
+                image: 'https://drive.google.com/thumbnail?id=1xW8SDKHsl5ITBBRTox85CCQu4fY4N4oA&sz=w1000',
+                desc: 'Meningkatkan kreativitas visual, melalui teknik komposisi dan penyuntingan foto menggunakan kamera smartphone untuk pameran digital.',
+                alat: 'Smartphone dengan memori cukup, tripod mini, ring light portabel (opsional).',
+                pakaian: 'Seragam sekolah yang berlaku pada hari tersebut.',
+                tempat: 'Ruang Kelas (Teori) / Lingkungan Sekolah (Hunting Area).',
+                goals: 'Menguasai fungsi Pro/Manual Mode, mahir melakukan color grading, dan mengadakan galeri pameran.'
+            },
+            {
+                id: 'tka',
+                name: 'Tes Akademik',
+                type: 'PILIHAN',
+                day: 'Selasa',
+                time: '15.00 - 16.30 WIB',
+                image: 'https://drive.google.com/thumbnail?id=10K8yNXLdI1O-wI9TWYbBlmsUoO2ejPtJ&sz=w1000',
+                desc: 'Meningkatkan penalaran analitis dan kesiapan akademik, melalui pembahasan taktis soal logika, matematika, dan verbal (TKA).',
+                alat: 'Modul soal-soal TKA/TPS, alat tulis, dan stopwatch/pewaktu.',
+                pakaian: 'Seragam sekolah yang berlaku.',
+                tempat: 'Ruang Kelas / Perpustakaan.',
+                goals: 'Meningkatkan kecepatan dan ketepatan menjawab soal logika-analitik & mencapai target skor Try Out.'
+            },
+            {
+                id: 'badminton',
+                name: 'Badminton',
+                type: 'PILIHAN',
+                day: 'Kamis',
+                time: '15.00 - 16.30 WIB',
+                image: 'https://drive.google.com/thumbnail?id=1lvM644sWf54YYMNZNyk2qSK57DfPqCgA&sz=w1000',
+                desc: 'Melatih kelincahan fisik dan refleks, melalui penguasaan teknik langkah kaki (footwork) dan pukulan dasar dalam simulasi pertandingan.',
+                alat: 'Raket badminton, shuttlecock, dan net.',
+                pakaian: 'Kaos olahraga, celana training/pendek, sepatu indoor (non-marking).',
+                tempat: 'GOR / Lapangan Bulu Tangkis Sekolah.',
+                goals: 'Memahami peraturan resmi, menguasai teknik dasar (serve, lob, smash), & bersaing di level sekolah.'
+            },
+            {
+                id: 'english',
+                name: 'The Wordsmith (English Club)',
+                type: 'PILIHAN',
+                day: 'Kamis',
+                time: '15.00 - 16.30 WIB',
+                image: 'https://drive.google.com/thumbnail?id=1ArXxbQNss8-eejDPVsOEn-ayq1fsiI-t&sz=w1000',
+                desc: 'Ekstrakurikuler untuk mengasah kemampuan komunikasi dan rasa percaya diri murid, melalui latihan public speaking, debat, dan penulisan kreatif berbahasa Inggris dalam simulasi konferensi atau kompetisi bahasa.',
+                alat: 'Buku catatan, alat tulis, kamus, dan laptop/gawai (untuk riset materi).',
+                pakaian: 'Seragam sekolah atau pakaian bebas rapi.',
+                tempat: 'Ruang Kelas / Laboratorium Bahasa.',
+                goals: 'Murid mampu menyusun argumen yang logis, berpidato tanpa teks (impromptu), dan siap mewakili sekolah dalam kompetisi Speech atau English Debate.'
+            }
+        ];
+
+        const track = document.getElementById('character-track');
+
+        function initUI() {
+            // Render Kartu ke Track Swiper
+            ekskulDB.forEach((eks) => {
+                const isWajib = eks.type === 'WAJIB';
+                const cardHTML = `
+                    <div class="swiper-slide">
+                        <div class="char-card overflow-hidden relative group" onclick="handleCardClick(event, '${eks.id}')">
+                            <!-- Gambar Background -->
+                            <img src="${eks.image}" alt="${eks.name}" class="absolute inset-0 w-full h-full object-cover z-0">
+                            
+                            <!-- Gradient Penutup -->
+                            <div class="gradient-overlay absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent z-10 group-hover:from-brand-navy transition-colors duration-300"></div>
+                            
+                            <!-- Badge Wajib/Pilihan -->
+                            <div class="absolute top-4 right-4 z-20">
+                                <span class="px-2.5 py-1 text-[10px] font-black tracking-widest uppercase rounded bg-brand-white border ${isWajib ? 'border-brand-gold text-brand-gold' : 'border-brand-border text-brand-navy'} shadow-md">
+                                    ${eks.type}
+                                </span>
+                            </div>
+                            
+                            <!-- Info Bawah -->
+                            <div class="info-bawah absolute bottom-0 left-0 w-full p-5 z-20 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                                <h3 class="text-xl md:text-2xl font-bold text-white mb-1 shadow-sm leading-tight">${eks.name}</h3>
+                                <p class="text-brand-gold font-medium text-xs flex items-center gap-1">
+                                    <i class="far fa-clock"></i> ${eks.day}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                track.innerHTML += cardHTML;
             });
-        });
 
-        // Modal Logic
-        function openModal(card) {
+            // Inisialisasi library Swiper
+            var swiper = new Swiper(".mySwiper", {
+                effect: "coverflow",
+                grabCursor: true,
+                centeredSlides: true,
+                slidesPerView: "auto",
+                loop: true, // Auto ulang dari awal ketika mentok
+                slideToClickedSlide: true, // Otomatis menggeser kartu yang diklik ke tengah
+                coverflowEffect: {
+                    rotate: 0,
+                    stretch: 0,
+                    depth: 100,
+                    modifier: 2,
+                    slideShadows: false, // Dimatikan karena kita pakai custom shadow/blur css
+                },
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+                keyboard: {
+                    enabled: true,
+                }
+            });
+        }
+
+        // Fungsi Penanganan Klik Kartu
+        function handleCardClick(event, id) {
+            const slide = event.currentTarget.closest('.swiper-slide');
+            
+            // Jika kartu sudah di tengah (aktif), buka modal
+            if (slide.classList.contains('swiper-slide-active')) {
+                openEkskulModal(id);
+            }
+            // Jika belum aktif, tidak membuka modal (biarkan Swiper menggesernya ke tengah)
+        }
+
+        // Fungsi Membuka Modal
+        function openEkskulModal(id) {
+            const data = ekskulDB.find(e => e.id === id);
+            if (!data) return;
+
             const modal = document.getElementById('detail-modal');
             const backdrop = document.getElementById('modal-backdrop');
             const panel = document.getElementById('modal-panel');
             
-            // Inject data into Modal
-            document.getElementById('modal-title').innerText = card.querySelector('.card-title').innerText;
-            document.getElementById('modal-badge').innerText = card.querySelector('.card-badge').innerText;
-            document.getElementById('modal-desc').innerText = card.querySelector('.card-desc').innerText;
-            document.getElementById('modal-details').innerHTML = card.querySelector('.modal-data-content').innerHTML;
-            
-            // Get Image Source from Card and set to Modal Image
-            const imgSrc = card.querySelector('.card-image').src;
-            const imgAlt = card.querySelector('.card-image').alt;
-            const modalImage = document.getElementById('modal-image');
-            modalImage.src = imgSrc;
-            modalImage.alt = imgAlt;
-            
-            // Show modal container
+            // Update Data Modal
+            const badgeEl = document.getElementById('modal-badge');
+            badgeEl.textContent = data.type;
+            if(data.type === 'WAJIB') {
+                badgeEl.className = "inline-block px-3 py-1 bg-brand-gold/15 text-brand-gold font-extrabold text-[10px] tracking-wider uppercase rounded-full mb-2 border border-brand-gold/30 shadow-sm";
+            } else {
+                badgeEl.className = "inline-block px-3 py-1 bg-brand-navy/10 text-brand-navy font-extrabold text-[10px] tracking-wider uppercase rounded-full mb-2 border border-brand-navy/20 shadow-sm";
+            }
+
+            document.getElementById('modal-title').textContent = data.name;
+            document.getElementById('modal-time').innerHTML = `${data.day}, ${data.time}`;
+            document.getElementById('modal-desc').textContent = data.desc;
+            document.getElementById('modal-alat').textContent = data.alat;
+            document.getElementById('modal-pakaian').textContent = data.pakaian;
+            document.getElementById('modal-tempat').textContent = data.tempat;
+            document.getElementById('modal-goals').textContent = data.goals;
+
+            // Tampilkan modal
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+            document.body.style.overflow = 'hidden'; // Matikan scroll layar belakang
             
-            // Prevent background scrolling
-            document.body.style.overflow = 'hidden';
-            
-            // Trigger animation
+            // Animasi masuk
             requestAnimationFrame(() => {
                 backdrop.classList.remove('opacity-0');
                 panel.classList.remove('scale-95', 'opacity-0');
@@ -685,28 +628,27 @@
             });
         }
 
+        // Fungsi Menutup Modal
         function closeModal() {
             const modal = document.getElementById('detail-modal');
             const backdrop = document.getElementById('modal-backdrop');
             const panel = document.getElementById('modal-panel');
             
-            // Reverse animation
+            // Animasi keluar
             backdrop.classList.add('opacity-0');
             panel.classList.remove('scale-100', 'opacity-100');
             panel.classList.add('scale-95', 'opacity-0');
             
-            // Wait for animation to finish before hiding container
+            // Sembunyikan kontainer setelah animasi selesai
             setTimeout(() => {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
-                
-                // Clear modal image source
-                document.getElementById('modal-image').src = "";
-                
-                // Restore background scrolling
-                document.body.style.overflow = '';
+                document.body.style.overflow = ''; // Nyalakan scroll lagi
             }, 300);
         }
+
+        // Jalankan saat dokumen dimuat
+        document.addEventListener('DOMContentLoaded', initUI);
     </script>
 </body>
 </html>
